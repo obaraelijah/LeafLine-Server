@@ -3,7 +3,6 @@
   "version": "3.23.10",
   "description": "The LeafLine Book Store is an online platform that aims to provide a user-friendly and efficient way for customers to explore, purchase, and manage books.",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "test": "jest",
     "dev": "nodemon backend/server.js",
