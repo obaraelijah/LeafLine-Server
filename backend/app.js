@@ -25,7 +25,13 @@ app.use(cookieParser());
 app.use(cors('*'));
 
 
-
+app.use(
+  morgan('common', {
+    stream: fs.createWriteStream(path.join(__dirname, '/logs/access.log'), {
+      flags: 'a',
+    }),
+  })
+);
 
  app.use(express.urlencoded(
       { extended: true }
