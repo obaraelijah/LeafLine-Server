@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { createWriteStream } = require('fs');
 const { join } = require('path');
+const { errorHandler, notFound } = require('./app/middleware/errorMiddleware');
 
 const app = express();
 
@@ -42,5 +43,9 @@ app.use(
       .status(200)
       .json({ statusCode: 200, success: true, message: 'Health OK' });
   });
+  
+  //custom middleware
+  app.use(notFound);
+  app.use(errorHandler);
 
   module.exports = app;
