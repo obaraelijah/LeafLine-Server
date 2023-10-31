@@ -49,6 +49,7 @@ const getMe = asyncHandler(async (req, res, next) => {
   }
 });
 
+
 /**
  * @desc    Get all users → Only Allowed For Admin
  * @route   /api/v1/users/
@@ -73,6 +74,7 @@ const userList = asyncHandler(async (req, res) => {
     });
   }
 });
+
 
 /**
  * @desc    Get a Single User → Only Allowed For Admin
