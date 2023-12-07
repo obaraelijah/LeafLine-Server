@@ -8,13 +8,13 @@
  * @returns {Object} - The error response object sent to the client.
  */
 function sendError(res, statusCode, success, message) {
-    return res.status(statusCode).json({
-      statusCode,
-      success,
-      message,
-    });
-  }
-  
-  module.exports = {
-    sendError,
-  };
+  return res.status(statusCode).json({
+    statusCode,
+    success,
+    message,
+  });
+}
+
+module.exports = {
+  sendError,
+};

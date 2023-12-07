@@ -1,7 +1,6 @@
 // Basic Lib Imports
 const fs = require("fs");
 
-//ensure that the uploaded files have the correct file extensions
 const handleFileUpload = (req) => {
   const { originalname, path } = req.file;
   const parts = originalname.split(".");

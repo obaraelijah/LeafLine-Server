@@ -11,3 +11,4 @@ router.get("/", authMiddleware, adminController.dashboard);
 router.get("/last-sales", authMiddleware, adminController.monthlySales);
 
 module.exports = router;
+

@@ -3,7 +3,7 @@ const Order = require("../order/order.model");
 const stripe = require("stripe")(`${process.env.STRIPE_API_KEY}`);
 
 /**
- * @desc    Payment with stripe
+ * @desc    Payment with srtipe
  * @route   /api/v1/order/charge/create-order
  * @method  POST
  * @access  Private
@@ -106,7 +106,7 @@ exports.createOrder = async (req, res, next) => {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalAmountInCents,
-      currency: "Ksh",
+      currency: "usd",
       metadata: {
         order_id: newOrderArray._id,
       },
@@ -132,3 +132,5 @@ exports.createOrder = async (req, res, next) => {
     next(error)
   }
 };
+
+
