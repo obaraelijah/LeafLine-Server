@@ -1,5 +1,4 @@
 const request = require('supertest');
-
 const app = require('../app');
 
 describe('GET /', () => {
@@ -8,6 +7,8 @@ describe('GET /', () => {
       .get('/')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect({ statusCode: 200, success: true, message: 'Health OK' }, done);
+      .expect(200)
+      .expect({ statusCode: 200, success: true, message: 'Health OK' })
+      .end(done);
   });
 });
