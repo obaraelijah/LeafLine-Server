@@ -5,7 +5,6 @@ The LeafLine Book Store is an online platform that aims to provide a user-friend
 ### **Technologies and Tools**
 
 - Backend: Node.js, Express.js
-- Frontend: Tailwind CSS, React, RTK Query
 - Database: MongoDB, Redis
 - Payment Gateway Integration: Stripe
 - Software Design: Clean Architecture
