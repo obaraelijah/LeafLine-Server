@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const treblle = require('@treblle/express')
 const { errorHandler, notFound } = require('./app/middleware/errorMiddleware');
 
 
@@ -25,6 +26,14 @@ app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors('*'));
+
+app.use(
+  treblle({
+    apiKey: process.env.TREBLLE_API_KEY,
+    projectId: process.env.TREBLLE_PROJECT_ID,
+    additionalFieldsToMask: [],
+  })
+)
 
 // // Define an array of allowed origins
 // const allowedOrigins = [
