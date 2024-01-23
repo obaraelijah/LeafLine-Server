@@ -64,13 +64,6 @@ const orderSchema = mongoose.Schema(
     trackingNumber: {
       type: String,
       unique: true,
-      default: () => `LLTN-${generateId()}`,
-      indexed: true,
-    },
-    transactionId: {
-      type: String,
-      unique: true,
-      default: () => generateId(),
       indexed: true,
     },
     delivereAt: {
@@ -81,18 +74,10 @@ const orderSchema = mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-// Middleware to generate custom transactionId
-orderSchema.pre("save", function (next) {
-  if (!this.transactionId) {
-    this.transactionId = generateId();
-  }
-  next();
-});
-
-// Middleware to generate custom trackingNumber
+// Middleware to generate trackingNumber
 orderSchema.pre("save", function (next) {
   if (!this.trackingNumber) {
-    this.trackingNumber = `LLTN-${generateId()}`;
+    this.trackingNumber = `DEX-BDN-${generateId()}`;
   }
   next();
 });
