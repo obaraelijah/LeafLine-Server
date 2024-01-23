@@ -31,7 +31,7 @@ exports.monthlySales = asyncHandler(async (req, res) => {
         $match: {
           createdAt: {
             $gte: new Date('2023-01-01'), // Start date
-            $lte: new Date('2023-12-31'), // End date
+            $lte: new Date('2024-12-31'), // End date
           },
         },
       },
