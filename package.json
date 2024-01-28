@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon backend/server.js",
-    "start": "node backend/server.js",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
     "coverage": "nyc --reporter=text-lcov jest && nyc report --reporter=text-summary"
   },
   "jest": {
