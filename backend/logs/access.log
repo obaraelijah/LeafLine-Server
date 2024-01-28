@@ -8,3 +8,15 @@
 ::ffff:127.0.0.1 - - [23/Jan/2024:15:14:36 +0000] "GET /favicon.ico HTTP/1.1" 304 -
 ::ffff:127.0.0.1 - - [28/Jan/2024:09:18:32 +0000] "GET / HTTP/1.1" 304 -
 ::ffff:127.0.0.1 - - [28/Jan/2024:09:18:32 +0000] "GET /favicon.ico HTTP/1.1" 304 -
+::ffff:127.0.0.1 - - [28/Jan/2024:09:44:35 +0000] "POST /api/v1/users/register HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:45:10 +0000] "POST /api/v1/users/register HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:46:09 +0000] "POST /api/v1/users/login HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:47:17 +0000] "GET /api/v1/users/login HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:47:51 +0000] "GET /api/v1/users/login HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:48:51 +0000] "POST /api/v1/wishlist/add%0A HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:49:18 +0000] "POST /api/v1/wishlist/add%0A HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:49:23 +0000] "POST /api/v1/wishlist/add%0A HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:49:27 +0000] "POST /api/v1/wishlist/add%0A HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:49:44 +0000] "POST /api/v1/wishlist/%0A HTTP/1.1" 200 55
+::ffff:127.0.0.1 - - [28/Jan/2024:09:51:20 +0000] "POST /api/v1/books HTTP/1.1" 201 7187
+::ffff:127.0.0.1 - - [28/Jan/2024:09:52:17 +0000] "POST /api/v1/reviews/64f464789c6489e279481190%0A HTTP/1.1" 200 55
