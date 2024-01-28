@@ -1,5 +1,5 @@
-const Order = require("./order.model");
-const { sendResponse } = require("../../../services/responseService");
+const Order = require('./order.model');
+const { sendResponse } = require('../../../services/responseService');
 
 /**
  * @desc    Get order lists of customers
@@ -13,26 +13,30 @@ exports.orderLists = async (req, res) => {
   const itemsPerPage = 12;
   const skip = (page - 1) * itemsPerPage;
 
-  const [orders, totalOrders] = await Promise.all([
-    Order.find()
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(itemsPerPage)
-      .populate("user"),
-    Order.countDocuments(),
-  ]);
+  try {
+    const [orders, totalOrders] = await Promise.all([
+      Order.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .populate('bookId')
+        .limit(itemsPerPage),
+      Order.countDocuments(),
+    ]);
+    
+    const totalPages = Math.ceil(totalOrders / itemsPerPage);
+    const nextPage = page < totalPages ? page + 1 : null;
+    const prevPage = page > 1 ? page - 1 : null;
 
-  const totalPages = Math.ceil(totalOrders / itemsPerPage);
-  const nextPage = page < totalPages ? page + 1 : null;
-  const prevPage = page > 1 ? page - 1 : null;
-
-  return sendResponse(res, 200, true, "Order retrieved successfully", {
-    orders,
-    currentPage: page,
-    totalPages,
-    nextPage,
-    prevPage,
-  });
+    return sendResponse(res, 200, true, 'Order retrieved successfully', {
+      orders,
+      currentPage: page,
+      totalPages,
+      nextPage,
+      prevPage,
+    });
+  } catch (error) {
+    return sendResponse(res, 500, false, 'Internal Server Error');
+  }
 };
 
 /**
@@ -50,7 +54,7 @@ exports.updateOrderStatus = async (req, res, next) => {
     const order = await Order.findById(orderId);
 
     if (!order) {
-      return sendResponse(res, 404, false, "Order not found");
+      return sendResponse(res, 404, false, 'Order not found');
     }
 
     // Update the status field
@@ -62,10 +66,10 @@ exports.updateOrderStatus = async (req, res, next) => {
       res,
       200,
       true,
-      "Order status updated successfully",
+      'Order status updated successfully',
       order
     );
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
