@@ -1,10 +1,11 @@
-const mongoose = require("mongoose");
-const Order = require("../order/order.model");
-const stripe = require("stripe")(`${process.env.STRIPE_API_KEY}`);
+const mongoose = require('mongoose');
+const Order = require('../order/order.model');
+const Book = require('../book/book.model');
+const stripe = require('stripe')(`${process.env.STRIPE_API_KEY}`);
 
 /**
  * @desc    Payment with srtipe
- * @route   /api/v1/order/charge/create-order
+ * @route   /api/v1/payment/charge/create-order
  * @method  POST
  * @access  Private
  */
@@ -14,123 +15,121 @@ exports.createOrder = async (req, res, next) => {
   session.startTransaction();
 
   try {
-    const { address, city, postalCode, totalPrice, items } = req.body;
+    const { bookId, quantity, shippingAddress, shippingPrice } = req.body;
 
-    if (!items || !Array.isArray(items) || items.length === 0) {
+    // Basic Validation
+    if (!bookId) {
       return res.status(400).json({
         statusCode: 400,
-        message: "Validation error",
+        message: 'Validation error',
         errors: [
           {
-            field: "items",
-            message: "Item field is required",
+            field: 'bookId',
+            message: 'bookId field is required',
           },
         ],
       });
     }
 
-    // Validate the presence and type of totalPrice
-    if (typeof totalPrice !== "number" || totalPrice <= 0) {
+    if (!quantity || quantity <= 0) {
       return res.status(400).json({
         statusCode: 400,
-        message: "Validation error",
+        message: 'Validation error',
         errors: [
           {
-            field: "totalPrice",
-            message:
-              "Total price field is required and must be a positive number",
-          },
-        ],
-      });
-    }
-    if (!postalCode) {
-      return res.status(400).json({
-        statusCode: 400,
-        message: "Validation error",
-        errors: [
-          {
-            field: "postalCode",
-            message: "Postalcode field is required",
-          },
-        ],
-      });
-    }
-    if (!address) {
-      return res.status(400).json({
-        statusCode: 400,
-        message: "Validation error",
-        errors: [
-          {
-            field: "address",
-            message: "Address field is required",
+            field: 'quantity',
+            message: 'Quantity must be a positive number',
           },
         ],
       });
     }
 
-    if (!city) {
+    if (!req.user || !req.user.id) {
       return res.status(400).json({
         statusCode: 400,
-        message: "Validation error",
+        message: 'Validation error',
         errors: [
           {
-            field: "city",
-            message: "City field is required",
+            field: 'user',
+            message: 'User must need to login',
           },
         ],
       });
     }
 
-    const orderItems = items.map((item) => ({
-      bookId: item.bookId,
-      quantity: item.quantity,
-    }));
+    if (typeof shippingPrice !== 'number' || shippingPrice < 0) {
+      return res.status(400).json({
+        statusCode: 400,
+        message: 'Validation error',
+        errors: [
+          {
+            field: 'shippingPrice',
+            message: 'Shipping price must be a non-negative number',
+          },
+        ],
+      });
+    }
 
-    const newOrderArray = await Order.create(
-      [
-        {
-          user: req.user.id,
-          items: orderItems,
-          totalPrice: totalPrice,
-          address: address,
-          city: city,
-          postalCode: postalCode,
-          isPaid: false,
-        },
-      ],
-      { session }
-    );
+    const book = await Book.findById(bookId);
+    if (!book || !book.price) {
+      return null;
+    }
+    const pricePerBook = book.price;
 
-    // Convert totalAmount to cents
+    // Ensure quantity is a valid number
+    if (isNaN(quantity) || quantity <= 0) {
+      return null; // Handle invalid quantity
+    }
+
+    // Calculate subtotal
+    const subTotal = pricePerBook * quantity;
+
+    // Calculate total amount with shipping cost
+    const totalPrice = subTotal + shippingPrice;
+
+    const dataInsert = [
+      {
+        user: req.user.id,
+        bookId,
+        quantity,
+        subTotal,
+        totalPrice,
+        shippingAddress,
+        shippingPrice,
+      },
+    ];
+    // Create the order
+    const newOrder = await Order.create(dataInsert, { session });
+
+    // Stripe Payment Intent
     const totalAmountInCents = Math.round(totalPrice * 100);
-
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalAmountInCents,
-      currency: "usd",
+      currency: 'usd',
       metadata: {
-        order_id: newOrderArray._id,
+        company: 'LeafLine',
+        order_id: newOrder._id,
       },
     });
 
-    const newOrder = newOrderArray[0];
+    const updateFields = newOrder[0];
 
     // Update the isPaid field on newOrder
-    newOrder.isPaid = true;
-    
+    updateFields.isPaid = true;
+    updateFields.paidAt = Date.now();
+
     // Save the changes
-    await newOrder.save();
+    await updateFields.save();
 
     await session.commitTransaction();
-    session.endSession();
 
     res.json({
       clientSecret: paymentIntent.client_secret,
     });
   } catch (error) {
     await session.abortTransaction();
+    next(error);
+  } finally {
     session.endSession();
-    next(error)
   }
 };
-
-
