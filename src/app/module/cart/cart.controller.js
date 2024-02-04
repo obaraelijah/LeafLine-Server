@@ -65,10 +65,10 @@ exports.addToCart = asyncHandler(async (req, res, next) => {
     if (existingCartItem) {
       // If the book already exists, update the quantity
       existingCartItem.quantity += quantity;
-      existingCartItem.subTotal = Math.round(
+      existingCartItem.subTotal = Number(
         book.price * existingCartItem.quantity
       );
-      existingCartItem.totalPrice = Math.round(
+      existingCartItem.totalPrice = Number(
         book.price * existingCartItem.quantity +
           book.shippingFees * existingCartItem.quantity
       );
@@ -78,8 +78,8 @@ exports.addToCart = asyncHandler(async (req, res, next) => {
         book: book._id,
         quantity: quantity,
         shippingFees: book.shippingFees,
-        subTotal: Math.round(book.price * quantity),
-        totalPrice: Math.round(book.price * quantity + book.shippingFees),
+        subTotal: Number(book.price * quantity),
+        totalPrice: Number(book.price * quantity + book.shippingFees),
       };
       cart.items.push(newCartItem);
     }
