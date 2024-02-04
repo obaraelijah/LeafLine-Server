@@ -13,37 +13,51 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: false,
   },
-  bookId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Book',
-    required: false,
-  },
-  quantity: {
-    type: Number,
-    required: false,
-    min: 1,
-  },
+  books: [
+    {
+      bookId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book',
+        required: false,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+        min: 1,
+      },
+      subTotal: {
+        type: Number,
+        required: true,
+        min: 0,
+      },
+    },
+  ],
   totalPrice: {
     type: Number,
     required: false,
     min: 0,
   },
   shippingAddress: {
-    street: { type: String, required: false },
-    city: { type: String, required: false },
-    postalCode: { type: String, required: false },
-    country: { type: String, required: false },
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    postalCode: { type: String, required: true },
+    country: { type: String, required: true },
   },
-  shippingPrice: { type: Number, required: false },
   status: {
     type: String,
     enum: ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'],
     default: 'Processing',
   },
-  trackingNumber: { type: String, required: false },
+  trackingNumber: {
+    type: String,
+    require: true,
+    index: true,
+    unique: true,
+    sparse: true,
+  },
   discountAmount: { type: Number, required: false },
-  subTotal: { type: Number, required: false },
-  totalPrice: { type: Number, required: false },
+  subTotal: { type: Number, required: true },
+  totalPrice: { type: Number, required: true },
   isPaid: { type: Boolean, default: false },
   paidAt: { type: Date },
   isDelivered: { type: Boolean, default: false },
@@ -51,8 +65,7 @@ const orderSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-
-orderSchema.pre('save', function(next) {
+orderSchema.pre('save', function (next) {
   if (!this.orderId) {
     this.orderId = generateOrderId();
   }
