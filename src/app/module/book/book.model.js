@@ -30,10 +30,19 @@ const bookSchema = mongoose.Schema(
       trim: true,
       type: String,
     },
-    price: { type: Number, required: true, trim: true },
+    price: { type: Number, required: true },
     shippingFees: {
       type: Number,
-      default: 0 
+      default: 0,
+      required: [false, 'Please add Shipping Fee'],
+    },
+    shippingFeesDiscount: {
+      type: Number,
+      required: false
+    },
+    isFreeShipping: {
+      type: Boolean,
+      defalut: false
     },
     stock: {
       inStock: {
